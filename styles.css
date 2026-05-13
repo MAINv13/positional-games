@@ -1,0 +1,562 @@
+/* ============================================================
+   Позиционные игры — Стили
+   Эстетика: брутализм + терминал. Резкие границы, моноширинные
+   шрифты в технических местах, акцент янтарный на тёмном фоне.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* --- ПЕРЕМЕННЫЕ ТЕМ --- */
+:root[data-theme="dark"] {
+  --bg-base: #0a0a0b;
+  --bg-panel: #131316;
+  --bg-elevated: #1c1c20;
+  --bg-hover: #25252a;
+  --border-strong: #2e2e35;
+  --border-subtle: #1f1f24;
+  --text-primary: #e8e8ea;
+  --text-secondary: #9c9ca5;
+  --text-muted: #6a6a72;
+  --accent: #f5a524;          /* янтарный */
+  --accent-hover: #ffba3d;
+  --accent-muted: #7a521a;
+  --player-1: #4a9eff;
+  --player-2: #ff6b9d;
+  --player-3: #4ade80;
+  --terminal-color: #6a6a72;
+  --eq-path: #f5a524;
+  --error: #ef4444;
+  --success: #4ade80;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #fafaf7;
+  --bg-panel: #ffffff;
+  --bg-elevated: #f3f3ee;
+  --bg-hover: #e8e8e2;
+  --border-strong: #c8c8be;
+  --border-subtle: #dededa;
+  --text-primary: #1a1a1d;
+  --text-secondary: #555560;
+  --text-muted: #8a8a92;
+  --accent: #c47600;
+  --accent-hover: #a86500;
+  --accent-muted: #f0d9a8;
+  --player-1: #1e6fd9;
+  --player-2: #d63384;
+  --player-3: #1f9d55;
+  --terminal-color: #8a8a92;
+  --eq-path: #c47600;
+  --error: #c92e2e;
+  --success: #1f9d55;
+}
+
+/* --- БАЗА --- */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 14px;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+button, input, select { font-family: inherit; }
+
+/* --- ШАПКА --- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-strong);
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-mark {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 4px 8px;
+  border: 1px solid var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.app-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-indicator {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+}
+
+.status-indicator.active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --- ГЛАВНЫЙ ЛЕЙАУТ --- */
+.app-main {
+  display: grid;
+  grid-template-columns: 340px 1fr 340px;
+  gap: 1px;
+  background: var(--border-strong);
+  flex: 1;
+  min-height: 0;
+}
+
+.panel {
+  background: var(--bg-panel);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-tree {
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+/* --- СЕКЦИИ ПАНЕЛЕЙ --- */
+.panel-section {
+  padding: 20px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin: 0 0 14px 0;
+}
+
+/* --- ЭЛЕМЕНТЫ УПРАВЛЕНИЯ --- */
+.control-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  margin-top: 12px;
+}
+
+.control-label:first-child { margin-top: 0; }
+
+.control-select, .control-input {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.control-select:focus, .control-input:focus {
+  border-color: var(--accent);
+}
+
+.control-input[type="number"] {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.range-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.range-row input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.range-row .range-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* --- КНОПКИ --- */
+.button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn {
+  padding: 9px 14px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0b;
+  font-weight: 700;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #0a0a0b;
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+/* --- ЛЕГЕНДА --- */
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-p1 { background: var(--player-1); }
+.dot-p2 { background: var(--player-2); }
+.dot-p3 { background: var(--player-3); }
+.dot-terminal {
+  background: transparent;
+  border: 1px solid var(--terminal-color);
+}
+
+.legend-line {
+  width: 16px;
+  height: 2px;
+  background: var(--eq-path);
+  flex-shrink: 0;
+}
+
+/* --- ДЕРЕВО --- */
+.tree-header {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+}
+
+.tree-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.tree-container {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+
+#treeSvg {
+  display: block;
+  user-select: none;
+}
+
+/* Узлы дерева */
+.node-circle {
+  cursor: pointer;
+  transition: r 0.15s ease, stroke-width 0.15s ease;
+}
+
+.node-circle:hover {
+  stroke-width: 3;
+}
+
+.node-circle.player-1 { fill: var(--player-1); stroke: var(--player-1); }
+.node-circle.player-2 { fill: var(--player-2); stroke: var(--player-2); }
+.node-circle.player-3 { fill: var(--player-3); stroke: var(--player-3); }
+.node-circle.terminal {
+  fill: var(--bg-panel);
+  stroke: var(--terminal-color);
+  stroke-width: 1.5;
+}
+
+.node-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  fill: var(--text-primary);
+  text-anchor: middle;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+.node-payoff {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: var(--text-secondary);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.edge {
+  stroke: var(--border-strong);
+  stroke-width: 1.2;
+  fill: none;
+  transition: stroke 0.2s, stroke-width 0.2s;
+}
+
+.edge.equilibrium {
+  stroke: var(--eq-path);
+  stroke-width: 2.5;
+}
+
+.edge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  fill: var(--text-secondary);
+  pointer-events: none;
+}
+
+.edge-label.equilibrium {
+  fill: var(--eq-path);
+  font-weight: 700;
+}
+
+/* Подсветка узла при пошаговой индукции */
+.node-circle.highlight {
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.tree-tooltip {
+  position: absolute;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent);
+  padding: 8px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s;
+  z-index: 10;
+  max-width: 280px;
+}
+
+.tree-tooltip.visible { opacity: 1; }
+
+/* --- ПРАВАЯ ПАНЕЛЬ: результаты --- */
+.problem-statement {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.problem-statement p { margin: 0 0 10px 0; }
+
+.equilibrium-output, .comparison {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.equilibrium-output .placeholder,
+.comparison .placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 12px;
+}
+
+.equilibrium-strategy {
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--accent);
+  padding: 10px 12px;
+  margin: 8px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.strategy-player {
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.payoff-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.payoff-table th, .payoff-table td {
+  padding: 6px 8px;
+  border: 1px solid var(--border-strong);
+  text-align: right;
+}
+
+.payoff-table th:first-child, .payoff-table td:first-child {
+  text-align: left;
+}
+
+.payoff-table th {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.payoff-table td.better {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.payoff-table td.worse {
+  color: var(--error);
+}
+
+/* --- ПОДВАЛ --- */
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-strong);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* (стиль footer-version удалён вместе с надписью версии) */
+
+/* --- АДАПТИВ --- */
+@media (max-width: 1100px) {
+  .app-main { grid-template-columns: 280px 1fr 300px; }
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    overflow-y: auto;
+  }
+  .panel { max-height: none; }
+  .panel-tree { min-height: 500px; }
+}
+
+/* Скроллбары */
+.panel::-webkit-scrollbar, .tree-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.panel::-webkit-scrollbar-track, .tree-container::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+
+.panel::-webkit-scrollbar-thumb, .tree-container::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+}
+
+.panel::-webkit-scrollbar-thumb:hover, .tree-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-muted);
+}

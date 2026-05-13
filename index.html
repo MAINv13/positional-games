@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Позиционные игры: Аукцион заявок при IPO</title>
+
+  <!-- KaTeX (CDN с fallback на офлайн в lib/) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        crossorigin="anonymous" />
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+          crossorigin="anonymous"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+          crossorigin="anonymous"></script>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <span class="brand-mark">[ TG·04 ]</span>
+      <h1 class="app-title">Позиционные игры: Аукцион заявок при IPO</h1>
+    </div>
+    <div class="header-right">
+      <span class="status-indicator" id="status">idle</span>
+      <button class="theme-toggle" id="themeToggle" title="Переключить тему">
+        <span class="theme-icon-dark">◐</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- ЛЕВАЯ ПАНЕЛЬ: настройка и управление -->
+    <aside class="panel panel-controls">
+      <section class="panel-section">
+        <h2 class="section-title">01 · Конфигурация</h2>
+
+        <label class="control-label">Тип игры</label>
+        <select class="control-select" id="gameSelect">
+          <option value="ipo">Аукцион заявок при IPO (3 фонда)</option>
+          <option value="ultimatum">Ультиматум-игра (2 игрока)</option>
+          <option value="centipede">Сороконожка (Centipede)</option>
+          <option value="bargaining">Переговоры о разделе пирога</option>
+          <option value="market-entry">Вход на рынок (2 фирмы)</option>
+        </select>
+
+        <!-- Параметры конкретной игры подгружаются сюда динамически -->
+        <div class="game-params" id="gameParams"></div>
+      </section>
+
+      <section class="panel-section">
+        <h2 class="section-title">02 · Управление</h2>
+        <div class="button-grid">
+          <button class="btn btn-primary" id="btnSolve">Решить</button>
+          <button class="btn btn-secondary" id="btnStep">Пошагово</button>
+          <button class="btn btn-secondary" id="btnStop" disabled>Стоп</button>
+          <button class="btn btn-ghost" id="btnReset">Сброс</button>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2 class="section-title">03 · Легенда</h2>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot dot-p1"></span>Игрок 1 / Фонд А</div>
+          <div class="legend-item"><span class="legend-dot dot-p2"></span>Игрок 2 / Фонд Б</div>
+          <div class="legend-item"><span class="legend-dot dot-p3"></span>Игрок 3 / Фонд В</div>
+          <div class="legend-item"><span class="legend-dot dot-terminal"></span>Терминальный узел</div>
+          <div class="legend-item"><span class="legend-line"></span>Равновесный путь (SPE)</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ЦЕНТРАЛЬНАЯ ОБЛАСТЬ: дерево игры -->
+    <section class="panel panel-tree">
+      <div class="tree-header">
+        <h2 class="section-title">Дерево игры</h2>
+        <div class="tree-controls">
+          <button class="btn btn-ghost btn-sm" id="btnZoomOut">−</button>
+          <button class="btn btn-ghost btn-sm" id="btnZoomReset">⟲</button>
+          <button class="btn btn-ghost btn-sm" id="btnZoomIn">+</button>
+        </div>
+      </div>
+      <div class="tree-container" id="treeContainer">
+        <svg id="treeSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="tree-tooltip" id="tooltip"></div>
+    </section>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ: результаты -->
+    <aside class="panel panel-results">
+      <section class="panel-section">
+        <h2 class="section-title">04 · Постановка</h2>
+        <div class="problem-statement" id="problemStatement">
+          <!-- Заполняется JS, рендерится через KaTeX -->
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2 class="section-title">05 · Равновесие (SPE)</h2>
+        <div class="equilibrium-output" id="equilibriumOutput">
+          <p class="placeholder">Нажмите «Решить» для запуска обратной индукции.</p>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2 class="section-title">06 · Сравнение стратегий</h2>
+        <div class="comparison" id="comparison">
+          <p class="placeholder">Сравнение SPE и наивной стратегии появится после решения.</p>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="app-footer">
+    <span>НИЯУ МИФИ · Кафедра 22 «Кибернетика» · Теория игр · Лаб. 4</span>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
