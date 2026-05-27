@@ -92,12 +92,24 @@ function makeNaiveStrategy(actions, valuations) {
 
 /**
  * Постановка задачи. Динамическая — показывает текущий набор действий
- * (актуально для непрерывного варианта, когда сетка меняется параметром).
+ * и режим информации.
  */
-function buildStatement(actions, valuations) {
+function buildStatement(actions, valuations, infoMode = 'full') {
   const gridStr = actions.length <= 5
     ? '\\{' + actions.join(', ') + '\\}'
     : `\\{${actions[0]}, ${actions[1]}, \\ldots, ${actions.at(-1)}\\}`;
+
+  const infoBlock = infoMode === 'private'
+    ? `<p><strong>Информация — приватная.</strong> Каждый фонд знает только свою
+       оценку; об оценках соперников знает лишь распределение
+       $v_j \\sim \\mathrm{Uniform}[90, 110]$. Решается как байесовская игра
+       (BNE) численно: стратегии становятся <em>функциями</em> $b_i(v_i, \\text{история})$.
+       Дерево ниже показывает версию с фиксированными оценками для наглядности
+       (классический SPE), а в правой панели — функции ставок и ожидаемые
+       выигрыши для приватного варианта.</p>`
+    : `<p><strong>Информация — полная.</strong> Оценки $v_i$ известны всем
+       игрокам (классический SPE через обратную индукцию).</p>`;
+
   return `
 <p><strong>Контекст.</strong> Компания «ТехПром» проводит IPO, выпуская 1 000 акций.
 Банк-организатор установил индикативный диапазон цены: 90–110 руб.</p>
@@ -108,15 +120,13 @@ function buildStatement(actions, valuations) {
 <p><strong>Приватные оценки:</strong>
 $v_A = ${valuations[0]},\\ v_B = ${valuations[1]},\\ v_C = ${valuations[2]}$ руб.</p>
 
+${infoBlock}
+
 <p><strong>Действия.</strong> Заявка $b_i \\in ${gridStr}$
-(всего ${actions.length} ${actions.length === 1 ? 'значение' : actions.length < 5 ? 'значения' : 'значений'}).
-При <em>«Шагов цены» = 3</em> это классический дискретный случай ТЗ;
-большие значения дают приближение к непрерывному варианту $b_i \\in [90, 110]$.</p>
+(всего ${actions.length} ${actions.length === 1 ? 'значение' : actions.length < 5 ? 'значения' : 'значений'}).</p>
 
 <p><strong>Распределение акций.</strong> Победитель — заявивший max; при равенстве
-лидеры делят акции поровну.</p>
-
-<p><strong>Выигрыш</strong> при доле $q$ и цене $p$:
+лидеры делят акции поровну. <strong>Выигрыш</strong> при доле $q$ и цене $p$:
 $\\pi_i = q \\cdot (v_i - p)$. Не получил акций → $\\pi_i = 0$.</p>
 `;
 }
@@ -157,6 +167,11 @@ export function buildIPOConfig(params = {}) {
   ];
   const steps = Math.max(2, Math.min(11, params.steps ?? 3));
   const actions = makePriceGrid(steps);
+  // Режим информации: 'full' — оценки общеизвестны (классическая обратная индукция),
+  // 'private' — приватные оценки, расчёт через BayesianSolver.
+  // В дереве игры мы всегда строим версию с конкретными оценками (full info),
+  // а для приватного режима солвер вызывается отдельно из main.js.
+  const infoMode = params.infoMode ?? 'full';
 
   const root = buildTree(actions, valuations);
 
@@ -165,9 +180,16 @@ export function buildIPOConfig(params = {}) {
     name: 'Аукцион заявок при IPO',
     players: ['Фонд А', 'Фонд Б', 'Фонд В'],
     root,
-    params: { vA: valuations[0], vB: valuations[1], vC: valuations[2], steps },
-    statement: buildStatement(actions, valuations),
+    params: { vA: valuations[0], vB: valuations[1], vC: valuations[2], steps, infoMode },
+    statement: buildStatement(actions, valuations, infoMode),
     naiveStrategy: makeNaiveStrategy(actions, valuations),
+    // Метаданные для байесовского режима — сетка ставок передаётся как массив чисел
+    bayesianConfig: infoMode === 'private' ? {
+      bidGrid: actions.map(Number),
+      vMin: 90,
+      vMax: 110,
+      valSteps: 11,
+    } : null,
   });
 }
 
@@ -187,4 +209,14 @@ export const IPOParamsSchema = [
   { key: 'vB',    label: 'Оценка фонда Б (v_B)',           type: 'number', min: 90, max: 110, step: 1, default: 105 },
   { key: 'vC',    label: 'Оценка фонда В (v_C)',           type: 'number', min: 90, max: 110, step: 1, default: 100 },
   { key: 'steps', label: 'Шагов цены (дискретизация)',     type: 'number', min: 3,  max: 11,  step: 2, default: 3 },
+  {
+    key: 'infoMode',
+    label: 'Информация об оценках',
+    type: 'select',
+    default: 'full',
+    options: [
+      { value: 'full',    label: 'Полная — оценки общеизвестны (классический SPE)' },
+      { value: 'private', label: 'Приватная — v_i ∼ U[90,110] (байесовский BNE)' },
+    ],
+  },
 ];
