@@ -26,7 +26,23 @@ export class ParamControls {
       this.container.appendChild(label);
 
       let input;
-      if (item.type === 'number' && item.min !== undefined && item.max !== undefined) {
+      if (item.type === 'select') {
+        // Выпадающий список — для категориальных параметров
+        // (например, режим информации: full / private)
+        input = document.createElement('select');
+        input.className = 'control-select';
+        for (const opt of item.options) {
+          const o = document.createElement('option');
+          o.value = opt.value;
+          o.textContent = opt.label;
+          if (opt.value === item.default) o.selected = true;
+          input.appendChild(o);
+        }
+        input.addEventListener('change', () => {
+          if (this.onChange) this.onChange(this.getValues());
+        });
+        this.container.appendChild(input);
+      } else if (item.type === 'number' && item.min !== undefined && item.max !== undefined) {
         // Числовой ползунок + value
         const row = document.createElement('div');
         row.className = 'range-row';
@@ -67,6 +83,7 @@ export class ParamControls {
     for (const item of this.schema) {
       const input = this.inputs.get(item.key);
       let v = input.value;
+      // Только числовые входы преобразуем в Number; select оставляем как строку
       if (item.type === 'number') v = Number(v);
       result[item.key] = v;
     }
