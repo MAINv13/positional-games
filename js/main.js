@@ -12,6 +12,7 @@ import { TreeRenderer } from './ui/TreeRenderer.js';
 import { ParamControls } from './ui/Controls.js';
 import { ResultsView }   from './ui/Results.js';
 import { ThemeManager }  from './ui/ThemeManager.js';
+import { BayesianView }  from './ui/BayesianView.js';
 import { renderMath }    from './utils/MathRenderer.js';
 
 import { buildIPOConfig, IPOParamsSchema } from './games/IPOAuction.js';
@@ -71,6 +72,8 @@ class App {
       document.getElementById('comparison'),
     );
     this.theme = new ThemeManager(document.getElementById('themeToggle'));
+    this.bayes = new BayesianView(document.getElementById('bayesianOutput'));
+    this.$bayesSection = document.getElementById('bayesianSection');
 
     // Состояние
     this.tree = null;
@@ -130,6 +133,16 @@ class App {
     // Дерево
     this.renderer.setTree(this.tree);
     this.results.reset();
+
+    // Байесовский блок — показываем только если игра предоставляет конфиг
+    if (this.tree.bayesianConfig) {
+      this.$bayesSection.style.display = '';
+      this.bayes.show(this.tree.bayesianConfig);
+    } else {
+      this.$bayesSection.style.display = 'none';
+      this.bayes.reset();
+    }
+
     this._setStatus('ready', this.tree.stats());
   }
 
