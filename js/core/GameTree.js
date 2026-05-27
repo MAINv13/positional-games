@@ -101,6 +101,10 @@ export class GameTree {
     this.params = meta.params || {};
     this.statement = meta.statement || '';
     this.naiveStrategy = meta.naiveStrategy || null;
+    // Опциональный конфиг для байесовского режима (только в IPO).
+    // Если != null — main.js может вызвать BayesianSolver.solveBayesianIPO(...)
+    // и показать функции ставок в дополнение к обычному дереву.
+    this.bayesianConfig = meta.bayesianConfig || null;
   }
 
   /** Число игроков. */
