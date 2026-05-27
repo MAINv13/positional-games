@@ -512,6 +512,24 @@ button, input, select { font-family: inherit; }
   color: var(--error);
 }
 
+/* --- Байесовский блок --- */
+.bayes-block {
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--accent);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.bayes-block:last-child {
+  margin-bottom: 0;
+}
+
+.bayes-plot {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  margin-top: 8px;
+}
+
 /* --- ПОДВАЛ --- */
 .app-footer {
   display: flex;
